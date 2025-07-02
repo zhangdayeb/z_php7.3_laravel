@@ -1,0 +1,710 @@
+
+### member register
+POST {{host}}/auth/register HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+{
+  "name":"test03",
+  "password":"123456",
+  "password_confirmation":"123456",
+  "phone":"13211223322",
+  "qk_pwd":"123456",
+  "realname":"张三",
+  "register_site":"手机注册",
+  "key":"$2y$10$uYcAFxLJbgJo.0nLdjq1PuO8Zvat5qjXcm8lGl.bmEBYe.U1H2GBu",
+  "captcha":"8819"
+}
+
+### app register
+POST {{host}}/auth/app/register HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+{
+    "name":"test06",
+    "password":"123456",
+    "register_site":"app",
+    "token":"e7fc228432b77e06763b9efb73dbb563",
+    "key":"$2y$10$CIGFV5/hUCliRN2eMsHjPOKNMa4bCwgpbf2m1V43l0YHcrmBJ7BHi",
+    "captcha":"7668"
+}
+
+### app login
+POST {{host}}/auth/app/login HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+{
+    "name":"test01",
+    "password":"123456"
+}
+> {%
+    client.global.set("memberToken", response.body.data.access_token);
+%}
+
+### login captcha
+POST {{host}}/auth/captcha HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### member login
+POST {{host}}/auth/login
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+{
+  "name":"test000",
+  "password":"123456",
+  "captcha":"9732",
+  "key":"$2y$10$pMZNGpAdK1oTr5hZsYD.mO3lNkgFO7mVl/7BUCZ06/2JHqo8qBuPu"
+}
+
+> {%
+    client.global.set("memberToken", response.body.data.access_token);
+%}
+# {%
+#    client.global.set("memberToken",login.response.body.$.data.access_token)
+# %}
+
+
+
+# @memberToken = {{login.response.body.$.data.access_token}}
+# @refreshToken = {{login.response.body.$.data.refresh_token}}
+
+### member info
+POST {{host}}/auth/me HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### member token refesh
+# @name refresh
+POST {{host}}/auth/refresh HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+// @refreshToken = {{refresh.response.body.$.data.access_token}}
+
+### member logout
+POST {{host}}/auth/logout HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### modify password
+POST {{host}}/member/password/modify HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "oldpassword":"1234567",
+  "password":"123456",
+  "password_confirmation":"123456"
+}
+
+### set qk password
+POST {{host}}/member/drawing_pwd/set HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "qk_pwd":"123456"
+}
+
+### modify password
+POST {{host}}/member/drawing_pwd/modify HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "old_qk_pwd":"123457",
+  "qk_pwd":"123458",
+  "qk_pwd_confirmation":"123458"
+}
+
+### agent apply
+POST {{host}}/agent/apply HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "name":"测试",
+  "phone":"13290391023",
+  "reason":"申请"
+}
+
+### recharge 
+POST {{host}}/recharge/normal?lang=en HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "name":"昵称",
+  "money":20000.00,
+  "account":"测试账户",
+  "hk_at":"2021-03-18 16:44:01",
+  "payment_type":"company_bankpay",
+  "payment_id":2,
+  "payment_account":"622100120023112",
+  "payment_name":"张三"
+}
+
+### recharge online
+POST {{host}}/recharge/online?lang=en HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "money":6000.00,
+    "payment_type":"online_alipay",
+    "payment_id": 1
+}
+
+### recharge list
+POST {{host}}/recharge/list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "limit":2
+}
+
+### payments list
+GET {{host}}/payments/list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### member drawing
+POST {{host}}/drawing HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "name":"张三",
+  "money":200.00,
+  "account":"测试账户",
+  "member_bank_id":1,
+  "qk_pwd":123456,
+  "member_remark": "会员提款时的备注"
+}
+
+### member drawing list
+GET {{host}}/drawing/list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### game record
+POST {{host}}/game/record HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### member money log
+GET {{host}}/moneylog HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "created_at":["2020-03-23 00:00:00","2020-03-25 00:00:00"]
+}
+
+### member money log type
+GET {{host}}/moneylog/type HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+
+### memer bank create
+POST {{host}}/member/bank?lang=en HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "card_no":"24334525435345",
+  "bank_type":"ICBC",
+  "owner_name":"测试"
+}
+
+### member bank list
+GET {{host}}/member/bank HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### memer bank update
+PATCH {{host}}/member/bank/3 HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "card_no":"24334525435345",
+  "bank_type":2,
+  "owner_name":"测试2"
+}
+
+### message list
+POST {{host}}/member/message/list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### message send list
+POST {{host}}/member/message/send_list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### unread message list
+POST {{host}}/member/message/unread_list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### message read list
+POST {{host}}/member/message/read_list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### reply message
+POST {{host}}/member/message/send/20 HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "title":"用户回复标题",
+  "content":"用户回复内容"
+}
+
+### 会员反馈
+POST {{host}}/member/message/send HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "title":"用户反馈标题",
+  "content":"用户反馈内容"
+}
+
+### read message
+POST {{host}}/member/message/22/read HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### message delete
+DELETE {{host}}/member/message/22/delete HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### message delete all
+DELETE {{host}}/member/message/delete_all HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### get redbag
+POST {{host}}/activity/redbag HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### daily bonus
+POST {{host}}/dailybonus/check HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### daily bonus award
+POST {{host}}/dailybonus/1/award HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### daily bonus money history
+GET {{host}}/dailybonus/money/history HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### daily bonus award history
+GET {{host}}/dailybonus/award/history HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### daily bonus history
+GET {{host}}/dailybonus/history HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### daily bonus award list
+GET {{host}}/dailybonus/award/list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### fsnow list
+GET {{host}}/fsnow/list
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+
+
+
+
+
+### 游戏相关
+
+### game login
+POST {{host}}/game/login HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "api_code":"ag",
+  "gameCode":"0"
+}
+
+### game balance
+POST {{host}}/game/balance HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "api_code":"ag"
+}
+
+### game deposit
+POST {{host}}/game/deposit HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "api_code":"ag",
+  "money":10
+}
+
+### game withdrawal
+POST {{host}}/game/withdrawal HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+  "api_code":"ag",
+  "money":10
+}
+
+### api game list
+GET {{host}}/games/apis?gameType=3 HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+
+
+### banners
+GET {{host}}/banners?groups=new1 HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### games
+GET {{host}}/games HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+
+### system notice
+GET {{host}}/system/notices HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### abouts
+GET {{host}}/abouts HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### activity
+GET {{host}}/activities HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### activity detail
+GET {{host}}/activity/1 HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### team child list
+POST {{host}}/team/childlist HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### team fdinfo
+GET {{host}}/team/fdinfo HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### team add
+POST {{host}}/team/add HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "name":"test031",
+    "password":"123456",
+    "password_confirmation":"123456",
+    "rates":[
+        {"game_type":1,"rate":6.0},
+        {"game_type":2,"rate":6.0},
+        {"game_type":3,"rate":6.0},
+        {"game_type":4,"rate":6.0},
+        {"game_type":5,"rate":6.0},
+        {"game_type":6,"rate":6.0},
+        {"game_type":7,"rate":6.0},
+        {"game_type":99,"rate":6.0}
+    ]
+}
+
+### team childrates
+POST {{host}}/team/childrates HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "child_member_id":11,
+    "rates":[
+        {"game_type":1,"rate":6.0}
+    ]
+}
+
+### team report
+POST {{host}}/team/report HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "created_at":["2020-01-01","2020-10-20"]
+}
+
+### team chart
+POST {{host}}/team/chart HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### team invite create
+POST {{host}}/team/invite/create HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "rates":[
+        {"game_type":1,"rate":2.0},
+        {"game_type":2,"rate":2.0},
+        {"game_type":3,"rate":2.0},
+        {"game_type":4,"rate":2.0},
+        {"game_type":5,"rate":2.0},
+        {"game_type":6,"rate":2.0},
+        {"game_type":7,"rate":2.0},
+        {"game_type":99,"rate":2.0}
+    ]
+}
+
+### team invite list
+GET {{host}}/team/invite/list HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### team invite update
+POST {{host}}/team/invite/update HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "invite_id":1,
+    "is_open":1,
+    "rates":[
+        {"game_type":1,"rate":3.0}
+    ]
+}
+
+### team invite records
+POST {{host}}/team/invite/records HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "invite_id":1
+}
+
+### user info
+POST {{host}}/auth/info/update HTTP/1.1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "realname":"test",
+    "phone":"13244312322",
+    "qq":"234234"
+}
+
+### 下级详情
+GET {{host}}/team/child/detail?member_id=14
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### 业绩查询
+GET {{host}}/team/performance
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### 业绩查询详情（直推/代理）
+GET {{host}}/team/performanceDetail?game_type=1&is_direct=1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### 转盘领奖
+POST {{host}}/wheel/award?lang=zh_cn
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "name": "aa1234"
+}
+
+### 真人升级数据
+GET {{host}}/levelup/live/setting?lang=zh_cn
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "name": "haha01"
+}
+
+### 电子升级数据
+GET {{host}}/levelup/slot/setting
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "name": "haha01"
+}
+
+### 真人升级查询
+GET {{host}}/levelup/live/search
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "name": "haha01"
+}
+
+### 电子升级查询
+GET {{host}}/levelup/slot/search?lang=en&name=haha01
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "name": "haha01"
+}
+
+### 添加收藏
+POST {{host}}/favor/add?lang=en
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "game_type":3,
+    "api_name":"AG",
+    "model_id":1
+}
+
+### 删除收藏
+POST {{host}}/favor/delete?lang=en
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+{
+    "game_type":3,
+    "api_name":"AG",
+    "model_id":1
+}
+
+### 收藏列表
+GET {{host}}/favor/list
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### 首页热门活动
+GET {{host}}/main/advertise?lang=th
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### 首页热门游戏
+GET {{host}}/main/hotgame?lang=en
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### 首页比赛
+GET {{host}}/main/sport?lang=en
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+### VIP信息
+GET {{host}}/member/vips?lang=zh_cn
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+Authorization: Bearer {{memberToken}}
+
+### 反水等级
+GET {{host}}/fs/levels?game_type=1
+content-type: application/json
+X-Requested-With: XMLHttpRequest
+
+###
