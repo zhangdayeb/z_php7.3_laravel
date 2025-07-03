@@ -19,6 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 */
+
+// 在 routes/api.php 中添加
+Route::get('/test-cors', function () {
+    return response()->json(['message' => 'CORS is working']);
+});
+
 // domain('api.lin-game.com')
 Route::namespace("Member")->group(function () {
 
